@@ -1,3 +1,5 @@
+
+// .d.ts  文件的一种声明方式
 declare const __DEV__: boolean
 declare const __TEST__: boolean
 declare const __GLOBAL__: boolean

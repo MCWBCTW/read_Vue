@@ -30,9 +30,9 @@ export function initGlobalAPI(Vue: GlobalAPI) {
   }
   Object.defineProperty(Vue, 'config', configDef)
 
-  // exposed util methods.
-  // NOTE: these are not considered part of the public API - avoid relying on
-  // them unless you are aware of the risk.
+  // exposed util methods.	公开的util方法。
+  // NOTE: these are not considered part of the public API - avoid relying on		注意：这些不被视为公共API的一部分-避免依赖
+  // them unless you are aware of the risk.		除非你意识到风险。
   Vue.util = {
     warn,
     extend,
@@ -45,6 +45,7 @@ export function initGlobalAPI(Vue: GlobalAPI) {
   Vue.nextTick = nextTick
 
   // 2.6 explicit observable API
+	// 2.6显式可观察API
   Vue.observable = <T>(obj: T): T => {
     observe(obj)
     return obj
