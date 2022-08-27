@@ -10,17 +10,17 @@ const callbacks: Array<Function> = []
 let pending = false
 
 function flushCallbacks() {
-  pending = false
-  // 数组的slice方法，为浅拷贝
-  // let a = [{name:1},{name:2}];
-  // let b = a.slice(0);
-  // b[0].name = 123;
-  // a[0]的name值则变为123
-  const copies = callbacks.slice(0)
-  callbacks.length = 0
-  for (let i = 0; i < copies.length; i++) {
-    copies[i]()
-  }
+	pending = false
+	// 数组的slice方法，为浅拷贝
+	// let a = [{name:1},{name:2}];
+	// let b = a.slice(0);
+	// b[0].name = 123;
+	// a[0]的name值则变为123
+	const copies = callbacks.slice(0)
+	callbacks.length = 0
+	for (let i = 0; i < copies.length; i++) {
+		copies[i]()
+	}
 }
 
 // Here we have async deferring wrappers using microtasks.
@@ -60,58 +60,67 @@ let timerFunc
 //Promise可用，我们将使用它：
 /* istanbul ignore next, $flow-disable-line */
 if (typeof Promise !== 'undefined' && isNative(Promise)) {
-  const p = Promise.resolve()
-  timerFunc = () => {
-    p.then(flushCallbacks)
-    // In problematic UIWebViews, Promise.then doesn't completely break, but
-    // it can get stuck in a weird state where callbacks are pushed into the
-    // microtask queue but the queue isn't being flushed, until the browser
-    // needs to do some other work, e.g. handle a timer. Therefore we can
-    // "force" the microtask queue to be flushed by adding an empty timer.
-	//在有问题的UIWebView中，Promise。然后它不会完全断裂，但是
-	//它可能会陷入一种奇怪的状态，回调被推入
-	//微任务队列，但直到浏览器
-	//需要做一些其他工作，例如处理计时器。因此，我们可以：
-	//通过添加空计时器“强制”刷新微任务队列。
-    if (isIOS) setTimeout(noop)
-  }
-  isUsingMicroTask = true
+	const p = Promise.resolve()
+	timerFunc = () => {
+		p.then(flushCallbacks)
+		// In problematic UIWebViews, Promise.then doesn't completely break, but
+		// it can get stuck in a weird state where callbacks are pushed into the
+		// microtask queue but the queue isn't being flushed, until the browser
+		// needs to do some other work, e.g. handle a timer. Therefore we can
+		// "force" the microtask queue to be flushed by adding an empty timer.
+		//在有问题的UIWebView中，Promise。然后它不会完全断裂，但是
+		//它可能会陷入一种奇怪的状态，回调被推入
+		//微任务队列，但直到浏览器
+		//需要做一些其他工作，例如处理计时器。因此，我们可以：
+		//通过添加空计时器“强制”刷新微任务队列。
+		if (isIOS) setTimeout(noop)
+	}
+	isUsingMicroTask = true
 } else if (
-  !isIE &&
-  typeof MutationObserver !== 'undefined' &&
-  (isNative(MutationObserver) ||
-    // PhantomJS and iOS 7.x
-    MutationObserver.toString() === '[object MutationObserverConstructor]')
+	!isIE &&
+	typeof MutationObserver !== 'undefined' &&
+	(isNative(MutationObserver) ||
+		// PhantomJS and iOS 7.x
+		MutationObserver.toString() === '[object MutationObserverConstructor]')
 ) {
-  // Use MutationObserver where native Promise is not available,
-  // e.g. PhantomJS, iOS7, Android 4.4
-  // (#6466 MutationObserver is unreliable in IE11)
-  //在本地Promise不可用的情况下使用MutationObserver，
-  //例如PhantomJS、iOS7、Android 4.4
-  //（#6466 MutationObserver在IE11中不可靠）
-  let counter = 1
-  const observer = new MutationObserver(flushCallbacks)
-  const textNode = document.createTextNode(String(counter))
-  observer.observe(textNode, {
-    characterData: true
-  })
-  timerFunc = () => {
-    counter = (counter + 1) % 2
-    textNode.data = String(counter)
-  }
-  isUsingMicroTask = true
+	// Use MutationObserver where native Promise is not available,
+	// e.g. PhantomJS, iOS7, Android 4.4
+	// (#6466 MutationObserver is unreliable in IE11)
+	//在本地Promise不可用的情况下使用MutationObserver，
+	//例如PhantomJS、iOS7、Android 4.4
+	//（#6466 MutationObserver在IE11中不可靠）
+	let counter = 1
+	const observer = new MutationObserver(flushCallbacks)
+	const textNode = document.createTextNode(String(counter))
+	observer.observe(textNode, {
+		characterData: true
+	})
+	timerFunc = () => {
+		counter = (counter + 1) % 2
+		textNode.data = String(counter)
+	}
+	isUsingMicroTask = true
+
+	// setImmediate方法
+	// 接收2个参数。第一个为方法，第二个为给此方法的参数
+	// 将传入的方法作为宏任务，放在c++线程中执行，然后放在壬午队列中，因此不影响主进程执行
+	// https://blog.csdn.net/weixin_47450807/article/details/124098448
 } else if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
-  // Fallback to setImmediate.
-  // Technically it leverages the (macro) task queue,
-  // but it is still a better choice than setTimeout.
-  timerFunc = () => {
-    setImmediate(flushCallbacks)
-  }
+	// Fallback to setImmediate.
+	// Technically it leverages the (macro) task queue,
+	// but it is still a better choice than setTimeout.
+
+	//回退到setImmediate。
+	//从技术上讲，它利用（宏）任务队列，
+	//但它仍然是比setTimeout更好的选择。
+	timerFunc = () => {
+		setImmediate(flushCallbacks)
+	}
 } else {
-  // Fallback to setTimeout.
-  timerFunc = () => {
-    setTimeout(flushCallbacks, 0)
-  }
+	// Fallback to setTimeout.
+	timerFunc = () => {
+		setTimeout(flushCallbacks, 0)
+	}
 }
 
 export function nextTick(): Promise<void>
@@ -121,28 +130,28 @@ export function nextTick<T>(cb: (this: T, ...args: any[]) => any, ctx: T): void
  * @internal
  */
 export function nextTick(cb?: (...args: any[]) => any, ctx?: object) {
-  let _resolve
-  callbacks.push(() => {
-    if (cb) {
-      try {
-        cb.call(ctx)
-      } catch (e: any) {
-        handleError(e, ctx, 'nextTick')
-      }
-    } else if (_resolve) {
-      _resolve(ctx)
-    }
-  })
-  if (!pending) {
-    pending = true
-    timerFunc()
-  }
-  // $flow-disable-line
-  if (!cb && typeof Promise !== 'undefined') {
-    return new Promise(resolve => {
-      _resolve = resolve
-    })
-  }
+	let _resolve
+	callbacks.push(() => {
+		if (cb) {
+			try {
+				cb.call(ctx)
+			} catch (e: any) {
+				handleError(e, ctx, 'nextTick')
+			}
+		} else if (_resolve) {
+			_resolve(ctx)
+		}
+	})
+	if (!pending) {
+		pending = true
+		timerFunc()
+	}
+	// $flow-disable-line
+	if (!cb && typeof Promise !== 'undefined') {
+		return new Promise(resolve => {
+			_resolve = resolve
+		})
+	}
 }
 
 // https://blog.csdn.net/qq_35385241/article/details/121989261
