@@ -28,11 +28,14 @@ export function initMixin(Vue: typeof Component) {
     }
 
     // a flag to mark this as a Vue instance without having to do instanceof
-    // check
+	// 将其标记为Vue实例而不必执行instanceof的标志
+    // check 检查
     vm._isVue = true
     // avoid instances from being observed
+	// 免被观察到的实例
     vm.__v_skip = true
     // effect scope
+	// 影响范围
     vm._scope = new EffectScope(true /* detached */)
     vm._scope._vm = true
     // merge options
