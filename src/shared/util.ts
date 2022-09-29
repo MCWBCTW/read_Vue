@@ -4,6 +4,8 @@ export const isArray = Array.isArray
 
 // These helpers produce better VM code in JS engines due to their
 // explicitness and function inlining.
+// 这些助手可以在JS引擎中生成更好的VM代码，因为
+// 显式和函数内联。
 export function isUndef(v: any): v is undefined | null {
   return v === undefined || v === null
 }
@@ -22,6 +24,7 @@ export function isFalse(v: any): boolean {
 
 /**
  * Check if value is primitive.
+ * 检查值是否为原始值
  */
 export function isPrimitive(value: any): boolean {
   return (
@@ -41,6 +44,7 @@ export function isFunction(value: any): value is (...args: any[]) => any {
  * Quick object check - this is primarily used to tell
  * objects from primitive values when we know the value
  * is a JSON-compliant type.
+ * 快速对象检查-这主要用于在我们知道值是符合JSON的类型时将对象与原语值区分开来。
  */
 export function isObject(obj: any): boolean {
   return obj !== null && typeof obj === 'object'
@@ -48,6 +52,7 @@ export function isObject(obj: any): boolean {
 
 /**
  * Get the raw type string of a value, e.g., [object Object].
+ * 获取值的原始类型字符串，例如[object object]。
  */
 const _toString = Object.prototype.toString
 
@@ -58,6 +63,7 @@ export function toRawType(value: any): string {
 /**
  * Strict object type check. Only returns true
  * for plain JavaScript objects.
+ * 严格的对象类型检查。对于普通JavaScript对象，仅返回true。
  */
 export function isPlainObject(obj: any): boolean {
   return _toString.call(obj) === '[object Object]'
@@ -69,6 +75,7 @@ export function isRegExp(v: any): v is RegExp {
 
 /**
  * Check if val is a valid array index.
+ * 检查val是否是有效的数组索引。
  */
 export function isValidArrayIndex(val: any): boolean {
   const n = parseFloat(String(val))
@@ -85,6 +92,7 @@ export function isPromise(val: any): val is Promise<any> {
 
 /**
  * Convert a value to a string that is actually rendered.
+ * 将值转换为实际呈现的字符串。
  */
 export function toString(val: any): string {
   return val == null
@@ -96,7 +104,9 @@ export function toString(val: any): string {
 
 /**
  * Convert an input value to a number for persistence.
+ * 将输入值转换为数字以实现持久性。
  * If the conversion fails, return original string.
+ * 如果转换失败，则返回原始字符串。
  */
 export function toNumber(val: string): number | string {
   const n = parseFloat(val)
@@ -106,6 +116,7 @@ export function toNumber(val: string): number | string {
 /**
  * Make a map and return a function for checking if a key
  * is in that map.
+ * 制作一个Map并返回一个函数，用于检查Map中是否有键。
  */
 export function makeMap(
   str: string,
@@ -121,16 +132,19 @@ export function makeMap(
 
 /**
  * Check if a tag is a built-in tag.
+ * 检查标记是否为内置标记。
  */
 export const isBuiltInTag = makeMap('slot,component', true)
 
 /**
  * Check if an attribute is a reserved attribute.
+ * 检查属性是否为保留属性。
  */
 export const isReservedAttribute = makeMap('key,ref,slot,slot-scope,is')
 
 /**
  * Remove an item from an array.
+ * 从数组中移除项。
  */
 export function remove(arr: Array<any>, item: any): Array<any> | void {
   if (arr.length) {
@@ -143,6 +157,7 @@ export function remove(arr: Array<any>, item: any): Array<any> | void {
 
 /**
  * Check whether an object has the property.
+ * 检查对象是否具有该属性。
  */
 const hasOwnProperty = Object.prototype.hasOwnProperty
 export function hasOwn(obj: Object | Array<any>, key: string): boolean {
@@ -151,6 +166,7 @@ export function hasOwn(obj: Object | Array<any>, key: string): boolean {
 
 /**
  * Create a cached version of a pure function.
+ * 创建纯函数的缓存版本。
  */
 export function cached<R>(fn: (str: string) => R): (sr: string) => R {
   const cache: Record<string, R> = Object.create(null)
@@ -162,6 +178,7 @@ export function cached<R>(fn: (str: string) => R): (sr: string) => R {
 
 /**
  * Camelize a hyphen-delimited string.
+ * 生成以连字符分隔的字符串。
  */
 const camelizeRE = /-(\w)/g
 export const camelize = cached((str: string): string => {
@@ -170,6 +187,7 @@ export const camelize = cached((str: string): string => {
 
 /**
  * Capitalize a string.
+ * 将字符串大写。
  */
 export const capitalize = cached((str: string): string => {
   return str.charAt(0).toUpperCase() + str.slice(1)
@@ -177,6 +195,7 @@ export const capitalize = cached((str: string): string => {
 
 /**
  * Hyphenate a camelCase string.
+ * 连字符camelCase字符串。
  */
 const hyphenateRE = /\B([A-Z])/g
 export const hyphenate = cached((str: string): string => {

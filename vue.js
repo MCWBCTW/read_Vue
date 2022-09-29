@@ -190,6 +190,9 @@
    * since native bind is now performant enough in most browsers.
    * But removing it would mean breaking code that was able to run in
    * PhantomJS 1.x, so this must be kept for backward compatibility.
+   * 简单绑定polyfill适用于不支持它的环境，例如PhantomJS 1.x。技术上，我们不再需要它，
+   * 因为在大多数浏览器中，本机绑定的性能已经足够好了。
+   * 但删除它意味着破坏能够在PhantomJS1.x中运行的代码，因此必须保留它以实现向后兼容性。
    */
 
   /* istanbul ignore next */
@@ -217,6 +220,7 @@
 
   /**
    * Convert an Array-like object to a real Array.
+   * 将类似数组的对象转换为真实数组。
    */
   function toArray (list, start) {
     start = start || 0;
@@ -230,6 +234,7 @@
 
   /**
    * Mix properties into target object.
+   * 将属性混合到目标对象中。
    */
   function extend (to, _from) {
     for (var key in _from) {
@@ -240,6 +245,7 @@
 
   /**
    * Merge an Array of Objects into a single Object.
+   * 将对象数组合并为单个对象。
    */
   function toObject (arr) {
     var res = {};
@@ -252,28 +258,34 @@
   }
 
   /* eslint-disable no-unused-vars */
+  // eslint禁用没有未使用的var
 
   /**
    * Perform no operation.
    * Stubbing args to make Flow happy without leaving useless transpiled code
    * with ...rest (https://flow.org/blog/2017/05/07/Strict-Function-Call-Arity/).
+   * 不执行任何操作。存根参数以使Flow满意，而不会留下无用的传输代码…rest
    */
   function noop (a, b, c) {}
 
   /**
    * Always return false.
+   * 永远返回false
    */
   var no = function (a, b, c) { return false; };
 
   /* eslint-enable no-unused-vars */
+  // eslint不启用未使用的var
 
   /**
    * Return the same value.
+   * 返回相同的值。
    */
   var identity = function (_) { return _; };
 
   /**
    * Generate a string containing static keys from compiler modules.
+   * 从编译器模块生成包含静态键的字符串。
    */
   function genStaticKeys (modules) {
     return modules.reduce(function (keys, m) {
@@ -284,6 +296,7 @@
   /**
    * Check if two values are loosely equal - that is,
    * if they are plain objects, do they have the same shape?
+   * 检查两个值是否大致相等，也就是说，如果它们是普通对象，它们的模型是否相同？
    */
   function looseEqual (a, b) {
     if (a === b) { return true }
@@ -324,6 +337,7 @@
    * Return the first index at which a loosely equal value can be
    * found in the array (if value is a plain object, the array must
    * contain an object of the same shape), or -1 if it is not present.
+   * 返回可以在数组中找到松散相等值的第一个索引（如果值是普通对象，则数组必须包含相同形状的对象），如果不存在，则返回-1。
    */
   function looseIndexOf (arr, val) {
     for (var i = 0; i < arr.length; i++) {
@@ -334,6 +348,7 @@
 
   /**
    * Ensure a function is called only once.
+   * 确保只调用一次函数。
    */
   function once (fn) {
     var called = false;
@@ -1498,7 +1513,7 @@
     normalizeProps(child, vm);
     normalizeInject(child, vm);
     normalizeDirectives(child);
-    
+
     // Apply extends and mixins on the child options,
     // but only if it is a raw options object that isn't
     // the result of another mergeOptions call.
@@ -1912,7 +1927,7 @@
       try {
         return fn.apply(null, arguments)
       } finally {
-        useMacroTask = false;    
+        useMacroTask = false;
       }
     })
   }
@@ -2735,7 +2750,7 @@
   function initLifecycle (vm) {
     var options = vm.$options;
 
-    // locate first non-abstract parent
+    // locate first non-abstract parent  定位第一个非抽象父级
     var parent = options.parent;
     if (parent && !options.abstract) {
       while (parent.$options.abstract && parent.$parent) {
@@ -3024,6 +3039,7 @@
 
   function callHook (vm, hook) {
     // #7573 disable dep collection when invoking lifecycle hooks
+    // #7573调用生命周期挂钩时禁用dep收集
     pushTarget();
     var handlers = vm.$options[hook];
     if (handlers) {
@@ -4685,12 +4701,14 @@
       }
 
       // a flag to avoid this being observed
+      // 避免被观察到的标志
       vm._isVue = true;
       // merge options
       if (options && options._isComponent) {
         // optimize internal component instantiation
         // since dynamic options merging is pretty slow, and none of the
         // internal component options needs special treatment.
+        // 优化内部组件实例化，因为动态选项合并非常缓慢，并且没有任何内部组件选项需要特殊处理。
         initInternalComponent(vm, options);
       } else {
         vm.$options = mergeOptions(
@@ -4709,9 +4727,9 @@
       initEvents(vm);
       initRender(vm);
       callHook(vm, 'beforeCreate');
-      initInjections(vm); // resolve injections before data/props
+      initInjections(vm); // resolve injections before data/props   在data/props之前解决注入
       initState(vm);
-      initProvide(vm); // resolve provide after data/props
+      initProvide(vm); // resolve provide after data/props    解析后提供 data/props
       callHook(vm, 'created');
 
       /* istanbul ignore if */
